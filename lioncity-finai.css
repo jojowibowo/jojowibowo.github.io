@@ -148,3 +148,25 @@ section.title-slide h2 {
 /* ---------- PDF Safety ---------- */
 /* No animations, transforms, or absolute layouts beyond footer */
 /* Avoid vh/vw units to prevent PDF clipping */
+
+/* Reveal compatibility snippet */
+
+/* Ensure slides use theme variables */
+.reveal { background: var(--color-bg, #fff); color: var(--color-text, #111); }
+
+/* Fragments */
+.reveal .fragment { opacity: 0.25; transition: opacity 0.25s ease; }
+.reveal .fragment.visible { opacity: 1; }
+
+/* Code blocks */
+.reveal pre, .reveal code { background: #f3f4f6; color: #111; padding: 0.25em 0.5em; border-radius: 4px; font-family: var(--font-mono, monospace); }
+
+/* Speaker notes */
+.reveal .speaker-notes { display: none; }
+.reveal .speaker-notes .notes { font-size: 0.9em; color: var(--color-muted, #6b7280); }
+
+/* Print styles for PDF export */
+@media print {
+  .reveal .controls, .reveal .progress, .reveal .slide-number { display: none !important; }
+  .reveal .slides section { page-break-after: always; }
+}

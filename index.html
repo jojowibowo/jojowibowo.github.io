@@ -1,50 +1,85 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slides — jojowibowo.github.io</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gold and Bitcoin as Inflation Hedges — Jojo Wibowo</title>
+  <meta name="description" content="Regime-dependent analysis of gold and bitcoin for Singaporean retail investors.">
+  <meta name="author" content="Jojo Wibowo">
 
-  <!-- Reveal.js core CSS from CDN -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/white.css">
-
-  <!-- Your custom Marp-style theme (at repo root) -->
+  <!-- Local Reveal core CSS (preferred) -->
+  <link rel="stylesheet" href="./vendor/reveal/dist/reveal.css">
+  <!-- Minimal fallback theme removed; use only your custom theme if complete -->
   <link rel="stylesheet" href="./lioncity-finai.css">
 
   <style>
-    /* Ensure Reveal uses your font sizes comfortably on mobile */
-    .reveal { font-family: var(--font-main, Arial, sans-serif); }
-    /* If your theme uses :root variables, keep them; otherwise adjust here */
+    /* Small accessibility helpers */
+    :root { --reveal-bg: #ffffff; }
+    body { margin: 0; background: var(--reveal-bg); color: #111; }
+    main { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    /* Ensure focus outlines for keyboard users */
+    :focus { outline: 3px solid #1f4fd8; outline-offset: 2px; }
   </style>
 </head>
 <body>
+  <header role="banner" aria-label="Presentation header" style="padding:12px 20px;">
+    <h1 style="margin:0;font-size:18px;">Gold and Bitcoin as Inflation Hedges</h1>
+    <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Jojo Wibowo — RevoU DEEPP</p>
+  </header>
 
-  <div class="reveal">
-    <div class="slides">
-      <!-- The Markdown content will be injected here as a single slide container -->
-      <section data-markdown="gold_bitcoin_pitch_marp.md" data-separator="^\n---\n" data-separator-vertical="^\n--\n" data-separator-notes="^Note:" data-charset="utf-8"></section>
+  <main role="main">
+    <div class="reveal" aria-live="polite">
+      <div class="slides" role="list">
+        <!-- Load slides.md from same folder; Reveal will split slides by --- -->
+        <section data-markdown="slides.md" data-separator="^\n---\n" data-separator-vertical="^\n--\n" data-charset="utf-8"></section>
+      </div>
     </div>
-  </div>
+  </main>
 
-  <!-- Reveal.js and plugins from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/markdown/markdown.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/notes/notes.js"></script>
+  <footer role="contentinfo" style="padding:12px 20px;font-size:13px;color:#6b7280;">
+    <span>Jojo Wibowo | RevoU DEEPP</span>
+  </footer>
 
+  <!-- Local Reveal scripts (preferred). If missing, the page will attempt CDN fallback. -->
   <script>
-    // Initialize Reveal with the Markdown plugin enabled
-    Reveal.initialize({
-      hash: true,
-      slideNumber: true,
-      plugins: [ RevealMarkdown, RevealNotes ],
-      // Optional: tune slide size and behavior for mobile
-      width: "100%",
-      height: "100%",
-      margin: 0.05,
-      minScale: 0.6,
-      maxScale: 1.0
-    });
+    // Helper to load a script and return a Promise
+    function loadScript(src){ return new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s);
+    }); }
+
+    // Try local files first, then CDN fallback
+    (async function initReveal(){
+      const localBase = './vendor/reveal/dist/';
+      const cdnBase = 'https://cdn.jsdelivr.net/npm/reveal.js@4/dist/';
+      try {
+        await loadScript(localBase + 'reveal.js');
+        // load markdown plugin from local path
+        await loadScript('./vendor/reveal/plugin/markdown/markdown.js');
+      } catch (e) {
+        // Fallback to CDN if local files missing
+        await loadScript(cdnBase + 'reveal.js');
+        await loadScript(cdnBase + 'plugin/markdown/markdown.js');
+      }
+
+      // Initialize Reveal with conservative, accessible defaults
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        hash: false,
+        slideNumber: true,
+        history: false,
+        width: 960,
+        height: 700,
+        margin: 0.08,
+        minScale: 0.5,
+        maxScale: 1.2,
+        keyboard: true,
+        plugins: [ RevealMarkdown ],
+        // Print-friendly settings
+        pdfSeparateFragments: false
+      });
+    })();
   </script>
 </body>
 </html>

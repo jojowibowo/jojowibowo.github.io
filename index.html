@@ -1,410 +1,623 @@
-[DATAVIZ OCT25 INT] Jojo Wibowo Advanced.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steam Strategic Analytics - Live Data Edition</title>
+    <title>RevoBank: Customer Segmentation Analysis</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap');
-        :root {
-            --color-bg: #FDFCFB;
-            --color-text: #1A202C;
-            --color-primary: #2D3748;
-            --color-accent: #319795;
-            --color-warning: #DD6B20;
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        revo: {
+                            navy: '#002147',
+                            gold: '#F0E442',
+                            light: '#F4F4F4',
+                            white: '#FFFFFF',
+                            text: '#333333',
+                            danger: '#D32F2F',
+                            success: '#388E3C'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Lato', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--color-bg); color: var(--color-text); scroll-behavior: smooth; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    </script>
+
+    <style>
+        /* Chart Container Styling Rules */
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 800px;
-            margin: auto;
-            height: 400px;
-            max-height: 500px;
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            max-width: 600px; /* Max width to prevent stretching */
+            height: 350px;    /* Default responsive height */
+            margin-left: auto;
+            margin-right: auto;
         }
-        .nav-link { transition: all 0.3s ease; border-bottom: 2px solid transparent; }
-        .nav-link:hover { color: var(--color-accent); border-bottom: 2px solid var(--color-accent); }
-        .tab-active { color: var(--color-accent) !important; border-bottom: 2px solid var(--color-accent) !important; }
-        .animate-fade { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 280px; /* Smaller height for mobile */
+            }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #002147; 
+            border-radius: 4px;
+        }
+        
+        .active-tab {
+            border-bottom: 3px solid #F0E442;
+            color: #002147;
+            font-weight: 700;
+        }
     </style>
-    <!-- Chosen Palette: Sophisticated Slate & Teal (Minimalist professional aesthetic) -->
-    <!-- Application Structure Plan: 
-         1. Executive Overview: High-level KPI summary derived from games and recommendations.
-         2. Interactive Data Hub: Three-view system (Paradox, Revenue, Geo) using Chart.js to visualize the provided CSV relations.
-         3. Strategic Recommendations: Qualitative interpretation of the data for business growth.
-         4. Data Architecture: Explanation of the Star Schema used to join these 5 CSVs.
+
+    <!-- Chosen Palette: RevoBank Corporate (Navy Blue #002147, Golden Yellow #F0E442) -->
+    <!-- Application Structure Plan:
+         1. Hero Section: High-level context and Key Metrics (Net Profit, Fraud).
+         2. Financial Deep Dive: Interactive charts showing the Gross -> Fraud -> Net waterfall.
+         3. Segmentation Hub: The core interactive module. Clickable cards for each cluster that update a central detailed view and charts.
+         4. Strategic Roadmap: A timeline view of recommendations.
+         5. Methodology Footer: Trust-building data hygiene info.
+         Rationale: This structure moves from "What is the problem?" (Financials) to "Who is causing it?" (Segmentation) to "What do we do?" (Strategy).
     -->
     <!-- Visualization & Content Choices:
-         - Scatter Plot (Chart.js): Visualizing actual positive_ratio vs hours.
-         - Horizontal Bar Chart (Chart.js): Genre revenue estimates using metadata + price_final.
-         - Polar Area Chart (Chart.js): Regional market distribution from user/country data.
-         CONFIRMATION: NO SVG used. NO Mermaid JS used.
+         1. Financials: Doughnut chart to visualize the Fraud "bite" out of Gross Profit.
+         2. Brand Perf: Bar chart for Avg Transaction size (Comparison).
+         3. Clusters: Interactive Bubble Chart (simulated scatter) to show Value vs Risk.
+         4. Personas: Clickable UI cards updating a detail pane (Inform/Teach).
+         CONFIRMATION: NO SVG graphics used (except FontAwesome icons). NO Mermaid JS used.
     -->
 </head>
-<body class="antialiased">
+<body class="bg-revo-light text-revo-text font-sans antialiased">
 
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <nav class="bg-revo-navy text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-teal-600 rounded flex items-center justify-center text-white">
-                        <i class="fa-solid fa-steam"></i>
-                    </div>
-                    <span class="font-bold text-lg tracking-tight">Analytics Pro</span>
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-chart-line text-revo-gold text-2xl mr-3"></i>
+                    <span class="font-heading font-bold text-xl tracking-wide">RevoBank Analytics</span>
                 </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#summary" class="nav-link text-sm font-medium py-1">Summary</a>
-                    <a href="#dashboard" class="nav-link text-sm font-medium py-1">Data Insights</a>
-                    <a href="#strategy" class="nav-link text-sm font-medium py-1">Strategy</a>
-                    <a href="#tech" class="nav-link text-sm font-medium py-1">Architecture</a>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <button onclick="scrollToSection('executive')" class="hover:text-revo-gold px-3 py-2 rounded-md text-sm font-medium transition">Executive Summary</button>
+                        <button onclick="scrollToSection('financials')" class="hover:text-revo-gold px-3 py-2 rounded-md text-sm font-medium transition">Financial Health</button>
+                        <button onclick="scrollToSection('segmentation')" class="hover:text-revo-gold px-3 py-2 rounded-md text-sm font-medium transition">Customer Segments</button>
+                        <button onclick="scrollToSection('strategy')" class="hover:text-revo-gold px-3 py-2 rounded-md text-sm font-medium transition">Roadmap</button>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="summary" class="pt-20 pb-16 px-6 max-w-7xl mx-auto">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
-            <div class="animate-fade">
-                <h1 class="text-5xl font-bold leading-tight mb-6 text-gray-900">
-                    The Engagement Economy: <br><span class="text-teal-600">Steam Market Strategy</span>
-                </h1>
-                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                    Based on the analysis of thousands of titles and recommendations, we've identified that user sentiment is a poor predictor of retention. Success in 2025 requires a strategic shift toward <strong>High-Utility Systems</strong> rather than single-use narrative experiences.
-                </p>
-                <div class="flex gap-4">
-                    <a href="#dashboard" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition shadow-lg">Explore Data</a>
-                    <div class="flex items-center text-sm text-gray-500">
-                        <i class="fa-solid fa-circle-check text-green-500 mr-2"></i> Derived from live dataset
-                    </div>
+    <header id="executive" class="bg-white shadow-sm mb-8">
+        <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-heading font-bold text-revo-navy mb-4">
+                Beyond the Numbers: Unlocking Dormant Potential
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                A strategic analysis of RevoBank's credit card portfolio (Dec '24 - May '25), focusing on transitioning from reactive reporting to proactive growth.
+            </p>
+            
+            <!-- Key Metrics Ticker -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto mt-10">
+                <div class="bg-revo-light p-4 rounded-lg border-l-4 border-revo-navy card-hover">
+                    <p class="text-sm text-gray-500 uppercase font-bold">Total Volume</p>
+                    <p class="text-2xl font-bold text-revo-navy">Rp 458.9 B</p>
+                    <p class="text-xs text-green-600"><i class="fa-solid fa-arrow-up"></i> Robust Demand</p>
                 </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <p class="text-3xl font-bold text-teal-600" id="stat-games">50k+</p>
-                    <p class="text-xs text-gray-500 uppercase font-bold mt-1">Titles Analyzed</p>
+                <div class="bg-revo-light p-4 rounded-lg border-l-4 border-revo-gold card-hover">
+                    <p class="text-sm text-gray-500 uppercase font-bold">Gross Profit (MDR)</p>
+                    <p class="text-2xl font-bold text-revo-navy">Rp 6.88 B</p>
+                    <p class="text-xs text-gray-500">1.5% Margin</p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <p class="text-3xl font-bold text-orange-600" id="stat-reviews">1M+</p>
-                    <p class="text-xs text-gray-500 uppercase font-bold mt-1">User Reviews</p>
+                <div class="bg-revo-light p-4 rounded-lg border-l-4 border-revo-danger card-hover">
+                    <p class="text-sm text-gray-500 uppercase font-bold">Fraud Loss</p>
+                    <p class="text-2xl font-bold text-red-600">Rp 5.68 B</p>
+                    <p class="text-xs text-red-500"><i class="fa-solid fa-triangle-exclamation"></i> 82.5% of Gross</p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <p class="text-3xl font-bold text-blue-600" id="stat-revenue">$1.2B</p>
-                    <p class="text-xs text-gray-500 uppercase font-bold mt-1">Est. Marketplace</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <p class="text-3xl font-bold text-purple-600" id="stat-retention">0.0%</p>
-                    <p class="text-xs text-gray-500 uppercase font-bold mt-1">Sentiment Correlation</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Data Dashboard Section -->
-    <section id="dashboard" class="py-20 bg-gray-50 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold mb-4">Market Intelligence Hub</h2>
-                <p class="text-gray-600 max-w-xl mx-auto">Toggle between key analytical views to visualize the relationship between pricing, engagement, and geography.</p>
-            </div>
-
-            <!-- Dashboard Navigation -->
-            <div class="flex justify-center space-x-4 mb-10">
-                <button onclick="switchTab('paradox')" id="btn-paradox" class="tab-btn px-6 py-2 rounded-full text-sm font-semibold bg-white shadow-sm border border-gray-200 hover:border-teal-500 transition tab-active">Engagement Paradox</button>
-                <button onclick="switchTab('revenue')" id="btn-revenue" class="tab-btn px-6 py-2 rounded-full text-sm font-semibold bg-white shadow-sm border border-gray-200 hover:border-teal-500 transition">Revenue Champions</button>
-                <button onclick="switchTab('geo')" id="btn-geo" class="tab-btn px-6 py-2 rounded-full text-sm font-semibold bg-white shadow-sm border border-gray-200 hover:border-teal-500 transition">Global Distribution</button>
-            </div>
-
-            <!-- Dashboard Views -->
-            <div id="view-paradox" class="dashboard-view animate-fade">
-                <div class="grid lg:grid-cols-3 gap-8 items-center">
-                    <div class="lg:col-span-2">
-                        <div class="chart-container">
-                            <canvas id="chartParadox"></canvas>
-                        </div>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
-                            <h3 class="font-bold text-lg mb-2">The "Broken" Correlation</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                Our regression analysis shows a coefficient of <strong>-0.009</strong> between review scores and playtime. High-scoring narrative games often experience immediate churn after completion.
-                            </p>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-teal-500">
-                            <h3 class="font-bold text-lg mb-2">Strategic Pivot</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                Invest in "Systemic Replayability". Mechanics that offer 100+ hours (Simulation, Strategy) generate 4x the long-term ROI compared to cinematic titles.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-revenue" class="dashboard-view hidden animate-fade">
-                <div class="grid lg:grid-cols-3 gap-8 items-center">
-                    <div class="lg:col-span-2">
-                        <div class="chart-container">
-                            <canvas id="chartRevenue"></canvas>
-                        </div>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
-                            <h3 class="font-bold text-lg mb-2">Top Yield Genres</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                Estimated revenue is highest in <strong>Action Roguelikes</strong> and <strong>Simulation</strong>. These tags correlate with higher price retention and lower discount elasticity.
-                            </p>
-                        </div>
-                        <div class="bg-teal-900 text-white p-6 rounded-xl shadow-lg">
-                            <h4 class="font-bold mb-2">Market Tip</h4>
-                            <p class="text-xs text-teal-100">"Female Protagonist" is no longer a niche tag—it now represents a core revenue driver with high advocacy ratios.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-geo" class="dashboard-view hidden animate-fade">
-                <div class="grid lg:grid-cols-3 gap-8 items-center">
-                    <div class="lg:col-span-2">
-                        <div class="chart-container">
-                            <canvas id="chartGeo"></canvas>
-                        </div>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
-                            <h3 class="font-bold text-lg mb-2">Tier 1 Dominance</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                USA, UK, and China account for 65% of all helpful reviews. These regions drive the Steam discovery algorithm.
-                            </p>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
-                            <h3 class="font-bold text-lg mb-2">Emerging Markets</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                Brazil and Turkey show high review-per-user volume but lower revenue density, suggesting a need for localized Pricing (PPP).
-                            </p>
-                        </div>
-                    </div>
+                <div class="bg-revo-light p-4 rounded-lg border-l-4 border-green-600 card-hover">
+                    <p class="text-sm text-gray-500 uppercase font-bold">Net Profit</p>
+                    <p class="text-2xl font-bold text-green-700">Rp 1.20 B</p>
+                    <p class="text-xs text-gray-500">Actualized Surplus</p>
                 </div>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Strategy Section -->
-    <section id="strategy" class="py-24 max-w-7xl mx-auto px-6">
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="p-10 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition group">
-                <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-600 group-hover:text-white transition">
-                    <i class="fa-solid fa-code text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">Lore-Rich Systems</h3>
-                <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                    Prioritize development of IPs that fuel "Theory-Crafting". High community engagement on wikis and YouTube acts as zero-cost marketing during sales.
-                </p>
-                <ul class="text-xs text-teal-700 font-bold space-y-2 uppercase tracking-wide">
-                    <li><i class="fa-solid fa-check mr-2"></i> Roguelike Loops</li>
-                    <li><i class="fa-solid fa-check mr-2"></i> Mod Support</li>
-                </ul>
-            </div>
-            <div class="p-10 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition group">
-                <div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-600 group-hover:text-white transition">
-                    <i class="fa-solid fa-coins text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">Price Protection</h3>
-                <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                    Deep discounts (>75%) damage long-term IP value. Utilize staged discounting and regional pricing (PPP) to maximize the "Long Tail" of revenue.
-                </p>
-                <ul class="text-xs text-orange-700 font-bold space-y-2 uppercase tracking-wide">
-                    <li><i class="fa-solid fa-check mr-2"></i> Staged Sales</li>
-                    <li><i class="fa-solid fa-check mr-2"></i> Regional Locks</li>
-                </ul>
-            </div>
-            <div class="p-10 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition group">
-                <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition">
-                    <i class="fa-solid fa-heart text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">Advocacy Loop</h3>
-                <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                    Reviews harden after 20 hours. Implement in-game prompts for reviews ONLY after this milestone to ensure high-quality "Helpful" status.
-                </p>
-                <ul class="text-xs text-purple-700 font-bold space-y-2 uppercase tracking-wide">
-                    <li><i class="fa-solid fa-check mr-2"></i> Milestones</li>
-                    <li><i class="fa-solid fa-check mr-2"></i> Steam Awards</li>
-                </ul>
-            </div>
-        </div>
-    </section>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-20">
 
-    <!-- Tech Architecture -->
-    <section id="tech" class="py-20 bg-gray-900 text-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row gap-12 items-center">
-                <div class="md:w-1/2">
-                    <h2 class="text-3xl font-bold mb-6">Star Schema Infrastructure</h2>
-                    <p class="text-gray-400 mb-6">
-                        Our analysts processed the five provided CSV files into a centralized Fact Table architecture. By joining <code>recommendations.csv</code> (Fact) with <code>games.csv</code> and <code>user.csv</code> (Dimensions), we created a low-latency environment for complex cross-filtering.
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-4 p-4 bg-gray-800 rounded-xl">
-                            <i class="fa-solid fa-database text-teal-500"></i>
+        <!-- Section 1: Financial Health Deep Dive -->
+        <section id="financials" class="scroll-mt-24">
+            <div class="mb-6">
+                <span class="text-revo-gold font-bold uppercase tracking-wider text-sm">The Challenge</span>
+                <h2 class="text-3xl font-heading font-bold text-revo-navy">The "High-Velocity, Low-Margin" Trap</h2>
+                <p class="mt-2 text-gray-600 max-w-4xl">
+                    While transaction volume is high, our analysis reveals a critical friction point. The bank is "running fast to stay in place" due to significant fraud leakage. Understanding this profit composition is the first step to optimization.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <!-- Chart: Profit Composition -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-lg font-bold text-revo-navy mb-4 border-b pb-2">Profit Breakdown (Actual vs. Potential)</h3>
+                    <div class="chart-container">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                    <div class="mt-4 bg-yellow-50 p-4 rounded-lg text-sm text-yellow-800 border border-yellow-200">
+                        <i class="fa-solid fa-lightbulb mr-2"></i>
+                        <strong>Insight:</strong> For every Rp 100 earned in merchant fees, Rp 82 is currently lost to fraud. Reducing fraud by just 20% would double our Net Profit.
+                    </div>
+                </div>
+
+                <!-- Chart: Brand Analysis -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-lg font-bold text-revo-navy mb-4 border-b pb-2">Brand Performance: Quality vs. Volume</h3>
+                    <div class="flex justify-end mb-2">
+                         <div class="text-xs text-gray-500">Avg Transaction Value (IDR)</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="brandChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-600">
+                        <p><strong>Premium Drivers:</strong> JCB and Amex yield higher value per swipe (Rp 880k+), ideal for luxury targeting.</p>
+                        <p class="mt-1"><strong>Volume Engines:</strong> Visa and Mastercard drive frequency but lower ticket sizes (Rp 660k-710k), ideal for daily habit formation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Customer Segmentation -->
+        <section id="segmentation" class="scroll-mt-24">
+            <div class="mb-6">
+                <span class="text-revo-gold font-bold uppercase tracking-wider text-sm">The Discovery</span>
+                <h2 class="text-3xl font-heading font-bold text-revo-navy">Who Are Our Customers?</h2>
+                <p class="mt-2 text-gray-600 max-w-4xl">
+                    Using K-Means clustering on RFM and financial health metrics (DTI), we identified four distinct personas. Moving from mass marketing to these targeted profiles is key to efficiency.
+                </p>
+            </div>
+
+            <!-- Interactive Segmentation Dashboard -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                <!-- Tabs/Cards for Cluster Selection -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 bg-revo-navy text-white">
+                    <button onclick="selectCluster(3)" id="tab-3" class="p-4 hover:bg-opacity-90 transition text-left focus:outline-none border-b-4 border-transparent active-tab">
+                        <div class="text-xs uppercase opacity-75">Cluster 3</div>
+                        <div class="font-bold text-lg"><i class="fa-solid fa-crown mr-2 text-revo-gold"></i>Elite Spender</div>
+                        <div class="text-xs mt-1">High Value, Low Risk</div>
+                    </button>
+                    <button onclick="selectCluster(1)" id="tab-1" class="p-4 hover:bg-opacity-90 transition text-left focus:outline-none border-b-4 border-transparent opacity-70 hover:opacity-100">
+                        <div class="text-xs uppercase opacity-75">Cluster 1</div>
+                        <div class="font-bold text-lg"><i class="fa-solid fa-fire mr-2 text-orange-400"></i>Stretched</div>
+                        <div class="text-xs mt-1">High Use, High Debt</div>
+                    </button>
+                    <button onclick="selectCluster(0)" id="tab-0" class="p-4 hover:bg-opacity-90 transition text-left focus:outline-none border-b-4 border-transparent opacity-70 hover:opacity-100">
+                        <div class="text-xs uppercase opacity-75">Cluster 0</div>
+                        <div class="font-bold text-lg"><i class="fa-solid fa-bed mr-2 text-gray-400"></i>Dormant</div>
+                        <div class="text-xs mt-1">Sleeping Giant</div>
+                    </button>
+                    <button onclick="selectCluster(2)" id="tab-2" class="p-4 hover:bg-opacity-90 transition text-left focus:outline-none border-b-4 border-transparent opacity-70 hover:opacity-100">
+                        <div class="text-xs uppercase opacity-75">Cluster 2</div>
+                        <div class="font-bold text-lg"><i class="fa-solid fa-leaf mr-2 text-green-400"></i>Niche</div>
+                        <div class="text-xs mt-1">Low Income/Use</div>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
+                    <!-- Detail Pane -->
+                    <div class="col-span-1 bg-gray-50 p-6 border-r border-gray-200">
+                        <h3 id="cluster-title" class="text-2xl font-heading font-bold text-revo-navy mb-1">The Elite Spender</h3>
+                        <span id="cluster-count" class="inline-block bg-revo-navy text-white text-xs px-2 py-1 rounded mb-4">503 Customers</span>
+                        
+                        <div class="space-y-4">
                             <div>
-                                <p class="text-sm font-bold">Normalization</p>
-                                <p class="text-xs text-gray-500">Discount integers converted to decimal multipliers for price elasticity modeling.</p>
+                                <p class="text-xs text-gray-500 uppercase font-bold">Avg Transaction (6M)</p>
+                                <p id="cluster-spend" class="text-xl font-bold text-revo-navy">Rp 411,694,744</p>
                             </div>
-                        </div>
-                        <div class="flex items-center space-x-4 p-4 bg-gray-800 rounded-xl">
-                            <i class="fa-solid fa-microchip text-blue-500"></i>
                             <div>
-                                <p class="text-sm font-bold">Revenue Proxy</p>
-                                <p class="text-xs text-gray-500">Used Box-Leiter ratios to estimate sales volume from public review counts.</p>
+                                <p class="text-xs text-gray-500 uppercase font-bold">Risk Profile (DTI)</p>
+                                <p id="cluster-dti" class="text-xl font-bold text-green-600">0.08 (Very Low)</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase font-bold">Key Characteristic</p>
+                                <p id="cluster-desc" class="text-sm text-gray-700 leading-relaxed">
+                                    Highest credit limits and pristine financial health. They treat credit as a convenience, not a lifeline. Likely hold premium cards from competitors.
+                                </p>
+                            </div>
+                            <div class="pt-4 border-t border-gray-200">
+                                <p class="text-xs text-revo-gold uppercase font-bold mb-2">Recommended Action</p>
+                                <div id="cluster-action" class="bg-white p-3 rounded shadow-sm border border-l-4 border-l-revo-gold text-sm text-gray-800">
+                                    <strong>Premiumization:</strong> Launch "Invite-Only" VIP tier with lifestyle perks (Lounge, Concierge) to build exit barriers.
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="md:w-1/2 grid grid-cols-2 gap-4">
-                    <div class="p-6 bg-gray-800 rounded-2xl text-center border border-gray-700">
-                        <i class="fa-solid fa-table mb-2 text-teal-400"></i>
-                        <p class="text-xs font-bold uppercase">Fact Table</p>
-                        <p class="text-[10px] text-gray-500 mt-1">Recommendations</p>
-                    </div>
-                    <div class="p-6 bg-gray-800 rounded-2xl text-center border border-gray-700">
-                        <i class="fa-solid fa-tags mb-2 text-blue-400"></i>
-                        <p class="text-xs font-bold uppercase">Dim Games</p>
-                        <p class="text-[10px] text-gray-500 mt-1">Games + Price</p>
-                    </div>
-                    <div class="p-6 bg-gray-800 rounded-2xl text-center border border-gray-700">
-                        <i class="fa-solid fa-user-group mb-2 text-purple-400"></i>
-                        <p class="text-xs font-bold uppercase">Dim Users</p>
-                        <p class="text-[10px] text-gray-500 mt-1">Country + Products</p>
-                    </div>
-                    <div class="p-6 bg-gray-800 rounded-2xl text-center border border-gray-700">
-                        <i class="fa-solid fa-list-check mb-2 text-orange-400"></i>
-                        <p class="text-xs font-bold uppercase">Dim Meta</p>
-                        <p class="text-[10px] text-gray-500 mt-1">Genre Tags</p>
+
+                    <!-- Visualization Pane -->
+                    <div class="col-span-1 lg:col-span-2 p-6 bg-white">
+                         <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-700">Cluster Distribution: Spend vs. Risk</h3>
+                            <div class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                X: Debt-to-Income | Y: Total Spend (Log Scale)
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="clusterChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center text-xs text-gray-400">
+                            *Bubble size represents Population Count
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-gray-100 text-center">
-        <p class="text-sm text-gray-400">© 2026 Steam Strategic Analytics Report | Jojo Wibowo</p>
-        <div class="mt-4 flex justify-center space-x-4">
-            <i class="fa-brands fa-linkedin text-gray-300 hover:text-teal-600 transition cursor-pointer"></i>
-            <i class="fa-brands fa-github text-gray-300 hover:text-gray-900 transition cursor-pointer"></i>
-        </div>
-    </footer>
+        <!-- Section 3: Strategic Roadmap -->
+        <section id="strategy" class="scroll-mt-24">
+            <div class="mb-6">
+                <span class="text-revo-gold font-bold uppercase tracking-wider text-sm">The Plan</span>
+                <h2 class="text-3xl font-heading font-bold text-revo-navy">Strategic Roadmap</h2>
+                <p class="mt-2 text-gray-600 max-w-4xl">
+                    A phased approach to recapturing value. We focus on securing our best assets first, then reactivating the dormant base.
+                </p>
+            </div>
 
+            <div class="relative border-l-4 border-revo-navy ml-4 space-y-12">
+                <!-- Phase 1 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-3 top-0 bg-revo-gold border-4 border-revo-navy w-6 h-6 rounded-full"></div>
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition border border-gray-100">
+                        <span class="text-xs font-bold text-revo-gold bg-revo-navy px-2 py-1 rounded uppercase">Phase 1: Months 1-2</span>
+                        <h3 class="text-xl font-bold text-revo-navy mt-2">Profit Protection & Asset Securing</h3>
+                        <p class="text-gray-600 mt-2 text-sm">Focus on the "Elite Spenders" (Cluster 3) and stopping the bleed.</p>
+                        <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i> <span><strong>Fraud Overhaul:</strong> Deploy anomaly detection for high-velocity transactors. Goal: Reduce leakage by 20%.</span></li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i> <span><strong>VIP Lock-in:</strong> Launch "Revo Infinite" upgrade for Cluster 3 to prevent churn.</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-3 top-0 bg-white border-4 border-revo-navy w-6 h-6 rounded-full"></div>
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition border border-gray-100">
+                        <span class="text-xs font-bold text-revo-navy bg-gray-200 px-2 py-1 rounded uppercase">Phase 2: Months 3-6</span>
+                        <h3 class="text-xl font-bold text-revo-navy mt-2">Activation & Volume Growth</h3>
+                        <p class="text-gray-600 mt-2 text-sm">Awakening the "Dormant Goldmine" (Cluster 0) and shifting Cluster 1 behavior.</p>
+                        <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                            <li class="flex items-start"><i class="fa-solid fa-bolt text-revo-gold mt-1 mr-2"></i> <span><strong>Revo-Start Campaign:</strong> "3 Swipes = Rp 300k Cashback" challenge for dormant users.</span></li>
+                            <li class="flex items-start"><i class="fa-solid fa-bolt text-revo-gold mt-1 mr-2"></i> <span><strong>Category Shift:</strong> Incentivize Cluster 1 to move spend to low-risk categories (Groceries/Fuel) via partnerships.</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-3 top-0 bg-white border-4 border-revo-navy w-6 h-6 rounded-full"></div>
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition border border-gray-100">
+                        <span class="text-xs font-bold text-revo-navy bg-gray-200 px-2 py-1 rounded uppercase">Phase 3: Ongoing</span>
+                        <h3 class="text-xl font-bold text-revo-navy mt-2">Dynamic Optimization</h3>
+                        <p class="text-gray-600 mt-2 text-sm">Long-term portfolio health management.</p>
+                        <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                            <li class="flex items-start"><i class="fa-solid fa-rotate text-blue-500 mt-1 mr-2"></i> <span><strong>Quarterly Migration Tracking:</strong> KPI: % of Cluster 0 moving to Cluster 1 or 3.</span></li>
+                            <li class="flex items-start"><i class="fa-solid fa-sliders text-blue-500 mt-1 mr-2"></i> <span><strong>Dynamic Limits:</strong> Auto-adjust credit limits based on real-time DTI and Velocity monitoring.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / Methodology -->
+        <footer class="bg-gray-100 rounded-xl p-8 mt-12 text-center text-sm text-gray-500">
+            <h4 class="font-bold text-revo-navy mb-2">Methodology Note</h4>
+            <p class="max-w-2xl mx-auto">
+                Analysis based on internal RevoBank transaction logs (Dec 2024 - May 2025). 
+                Data cleaning included: correcting 10x multiplier errors, removing expired cards, and realigning negative fraud values to absolute loss figures. 
+                Clustering performed using K-Means with Elbow Method validation.
+            </p>
+            <p class="mt-4">&copy; 2025 RevoBank Performance Management Team | Analyst: Jojo Wibowo</p>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript Logic -->
     <script>
-        // Tab Management
-        function switchTab(viewId) {
-            document.querySelectorAll('.dashboard-view').forEach(v => v.classList.add('hidden'));
-            document.getElementById(`view-${viewId}`).classList.remove('hidden');
-            
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            document.getElementById(`btn-${viewId}`).classList.add('tab-active');
-        }
+        // --- 1. DATA STATE ---
+        const clusterData = {
+            3: {
+                title: "The Elite Spender",
+                count: "503 Customers",
+                spend: "Rp 411,694,744",
+                dti: "0.08 (Very Low)",
+                desc: "Highest credit limits and pristine financial health. They treat credit as a convenience, not a lifeline. Likely hold premium cards from competitors.",
+                action: "<strong>Premiumization:</strong> Launch 'Invite-Only' VIP tier with lifestyle perks (Lounge, Concierge) to build exit barriers.",
+                icon: "fa-crown",
+                color: "text-revo-gold"
+            },
+            1: {
+                title: "The Stretched Spender",
+                count: "683 Customers",
+                spend: "Rp 366,316,625",
+                dti: "0.36 (High Risk)",
+                desc: "Heavy transactors pushing their financial limits. They drive volume and interest income but are vulnerable to economic shocks. The 'Revolvers'.",
+                action: "<strong>Balance Monitoring:</strong> Offer debt consolidation tools and focus rewards on essential spend (groceries) rather than luxury items.",
+                icon: "fa-fire",
+                color: "text-orange-400"
+            },
+            0: {
+                title: "The Dormant Goldmine",
+                count: "740 Customers",
+                spend: "Rp 0",
+                dti: "N/A (Inactive)",
+                desc: "The largest segment. High credit limits (Avg Rp 47M) but zero usage in 6 months. Acquired but not monetized. 'Back of Wallet' status.",
+                action: "<strong>Reactivation:</strong> 'Welcome Back' campaign. Incentivize first 3 transactions with exponential cashback to reform habits.",
+                icon: "fa-bed",
+                color: "text-gray-400"
+            },
+            2: {
+                title: "The Niche User",
+                count: "12 Customers",
+                spend: "Low (< Rp 10M)",
+                dti: "Variable",
+                desc: "Small outlier group with minimal income and spending capacity. Negligible impact on overall portfolio revenue.",
+                action: "<strong>Automated Stewardship:</strong> Maintain via low-cost digital channels. Provide financial literacy content.",
+                icon: "fa-leaf",
+                color: "text-green-400"
+            }
+        };
 
-        // Real Data Logic & Visualization
-        // We simulate the data processing logic that would happen after reading the provided CSVs
-        const rawGames = [
-            { id: 1139890, title: 'Countryballs', ratio: 94, reviews: 4775, price: 0.99 },
-            { id: 503180, title: 'MiniLAW', ratio: 82, reviews: 152, price: 14.99 },
-            { id: 1168470, title: 'Melancholy Love', ratio: 98, reviews: 1523, price: 4.99 },
-            { id: 268650, title: 'Game Development', ratio: 85, reviews: 12000, price: 19.99 }
-        ];
-
-        function initCharts() {
-            Chart.defaults.font.family = "'Inter', sans-serif";
-            
-            // 1. Paradox Chart: Sentiment vs Playtime
-            // Data derived from recommendations.csv and games.csv
-            new Chart(document.getElementById('chartParadox'), {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        label: 'Steam Titles',
-                        data: Array.from({length: 40}, () => ({
-                            x: Math.floor(Math.random() * 40) + 60, // positive_ratio 60-100
-                            y: Math.floor(Math.random() * 500) + 5 // hours 5-500
-                        })),
-                        backgroundColor: 'rgba(49, 151, 149, 0.6)',
-                        borderColor: '#2D3748',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: { display: true, text: 'Sentiment (Rating) vs. Retention (Hours Played)' }
+        // --- 2. CHART INITIALIZATION ---
+        
+        // Chart 1: Financial Waterfall (Doughnut)
+        const ctxFinancial = document.getElementById('financialChart').getContext('2d');
+        const financialChart = new Chart(ctxFinancial, {
+            type: 'doughnut',
+            data: {
+                labels: ['Net Profit (Surplus)', 'Fraud Loss (Leakage)', 'Operational/Other Costs (Implied)'], 
+                // Note: Detailed breakdown helps visualize the "Loss". 
+                // Gross = 6.88. Fraud = 5.68. Net = 1.20. 
+                // Wait, 1.2 + 5.68 = 6.88 exactly. So Gross is purely split between Fraud and Net in this simplified view.
+                datasets: [{
+                    data: [1.20, 5.68], // Billions
+                    backgroundColor: [
+                        '#388E3C', // Green for Net
+                        '#D32F2F', // Red for Fraud
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Lato' },
+                            usePointStyle: true
+                        }
                     },
-                    scales: {
-                        x: { title: { display: true, text: 'Positive Ratio %' }, min: 50 },
-                        y: { title: { display: true, text: 'Avg Hours Played' }, beginAtZero: true }
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += 'Rp ' + context.raw + ' Billion';
+                                return label;
+                            }
+                        }
                     }
                 }
-            });
+            }
+        });
 
-            // 2. Revenue Chart: Genre Performance
-            // Data derived from metadata.csv joined with games.csv (price_final)
-            new Chart(document.getElementById('chartRevenue'), {
-                type: 'bar',
-                data: {
-                    labels: ['Action Roguelike', 'Strategy', 'Simulation', 'Puzzle', 'Sports'],
-                    datasets: [{
-                        label: 'Estimated Revenue Index',
-                        data: [420, 385, 340, 110, 85],
-                        backgroundColor: '#2D3748',
-                        hoverBackgroundColor: '#319795',
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: true, text: 'Market Share by Metadata Tag' }
+        // Chart 2: Brand Analysis (Bar)
+        const ctxBrand = document.getElementById('brandChart').getContext('2d');
+        const brandChart = new Chart(ctxBrand, {
+            type: 'bar',
+            data: {
+                labels: ['JCB', 'Amex', 'Visa', 'Mastercard'],
+                datasets: [{
+                    label: 'Avg Transaction Value',
+                    data: [889000, 875000, 711000, 661000],
+                    backgroundColor: [
+                        '#F0E442', // Gold for Premium
+                        '#F0E442',
+                        '#002147', // Navy for Volume
+                        '#002147'
+                    ],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { display: false },
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp ' + (value/1000) + 'k';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
                     }
+                },
+                plugins: {
+                    legend: { display: false }
                 }
-            });
+            }
+        });
 
-            // 3. Geo Chart: User Distribution
-            // Data derived from user.csv and country mapping
-            new Chart(document.getElementById('chartGeo'), {
-                type: 'polarArea',
-                data: {
-                    labels: ['USA', 'China', 'UK', 'Russia', 'Brazil', 'Others'],
-                    datasets: [{
-                        data: [35, 20, 15, 12, 8, 10],
-                        backgroundColor: [
-                            '#319795', '#2C7A7B', '#285E61', '#DD6B20', '#C05621', '#EDF2F7'
-                        ]
-                    }]
+        // Chart 3: Cluster Scatter (Simulated with Bubble for control)
+        // Mapping approximate centers from description
+        const ctxCluster = document.getElementById('clusterChart').getContext('2d');
+        const clusterChart = new Chart(ctxCluster, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'Cluster 3 (Elite)',
+                        data: [{x: 0.08, y: 411, r: 20}], // r scaled roughly by population visual weight
+                        backgroundColor: '#F0E442'
+                    },
+                    {
+                        label: 'Cluster 1 (Stretched)',
+                        data: [{x: 0.36, y: 366, r: 25}], // larger population (683)
+                        backgroundColor: '#FB923C'
+                    },
+                    {
+                        label: 'Cluster 0 (Dormant)',
+                        data: [{x: 0.15, y: 5, r: 28}], // largest population (740), y near 0
+                        backgroundColor: '#9CA3AF'
+                    },
+                    {
+                        label: 'Cluster 2 (Niche)',
+                        data: [{x: 0.1, y: 2, r: 5}], // tiny population
+                        backgroundColor: '#4ADE80'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Avg Transaction Amount (Millions)' },
+                        min: 0,
+                        max: 500,
+                        grid: { color: '#f3f4f6' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Debt-to-Income (DTI) Ratio' },
+                        min: 0,
+                        max: 0.5,
+                        grid: { color: '#f3f4f6' }
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: { display: true, text: 'Global User Concentration (%)' }
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { usePointStyle: true }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label;
+                            }
+                        }
                     }
                 }
+            }
+        });
+
+
+        // --- 3. INTERACTION LOGIC ---
+
+        function selectCluster(id) {
+            // 1. Update UI Tabs
+            // Reset all
+            [0, 1, 2, 3].forEach(i => {
+                const btn = document.getElementById(`tab-${i}`);
+                btn.classList.remove('active-tab', 'bg-opacity-100', 'opacity-100');
+                btn.classList.add('opacity-70', 'hover:opacity-100');
+                btn.style.backgroundColor = ""; // reset inline
             });
+            
+            // Set Active
+            const activeBtn = document.getElementById(`tab-${id}`);
+            activeBtn.classList.add('active-tab', 'opacity-100');
+            activeBtn.classList.remove('opacity-70');
+            activeBtn.style.backgroundColor = "rgba(255,255,255,0.1)"; // slight highlight
+
+            // 2. Update Content
+            const data = clusterData[id];
+            
+            // Animate transition
+            const detailPane = document.getElementById('cluster-title').parentNode;
+            detailPane.style.opacity = 0;
+            
+            setTimeout(() => {
+                document.getElementById('cluster-title').innerText = data.title;
+                document.getElementById('cluster-count').innerText = data.count;
+                document.getElementById('cluster-spend').innerText = data.spend;
+                document.getElementById('cluster-dti').innerText = data.dti;
+                
+                // Color logic for DTI
+                const dtiElem = document.getElementById('cluster-dti');
+                if(data.dti.includes("High")) {
+                    dtiElem.className = "text-xl font-bold text-red-600";
+                } else if (data.dti.includes("Inactive")) {
+                     dtiElem.className = "text-xl font-bold text-gray-400";
+                } else {
+                    dtiElem.className = "text-xl font-bold text-green-600";
+                }
+
+                document.getElementById('cluster-desc').innerText = data.desc;
+                document.getElementById('cluster-action').innerHTML = data.action;
+                
+                detailPane.style.opacity = 1;
+            }, 200);
         }
 
-        window.onload = initCharts;
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                // Offset for sticky header
+                const y = element.getBoundingClientRect().top + window.pageYOffset - 80;
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
+        }
+
+        // Initialize with Cluster 3 active
+        document.addEventListener('DOMContentLoaded', () => {
+            selectCluster(3);
+        });
+
     </script>
 </body>
 </html>

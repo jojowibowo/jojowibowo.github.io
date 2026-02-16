@@ -4,82 +4,67 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Gold and Bitcoin as Inflation Hedges — Jojo Wibowo</title>
-  <meta name="description" content="Regime-dependent analysis of gold and bitcoin for Singaporean retail investors.">
+  <meta name="description" content="Regime-dependent analysis of gold and bitcoin for retail investors.">
   <meta name="author" content="Jojo Wibowo">
 
-  <!-- Local Reveal core CSS (preferred) -->
-  <link rel="stylesheet" href="./vendor/reveal/dist/reveal.css">
-  <!-- Minimal fallback theme removed; use only your custom theme if complete -->
+  <!-- Open Graph for richer sharing -->
+  <meta property="og:title" content="Gold and Bitcoin as Inflation Hedges">
+  <meta property="og:description" content="Regime-dependent analysis of gold and bitcoin for retail investors.">
+  <meta property="og:type" content="website">
+
+  <!-- Reveal core CSS (CDN preferred) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css">
+  <!-- Your custom theme only; do not load Reveal default theme to avoid conflicts -->
   <link rel="stylesheet" href="./lioncity-finai.css">
 
+  <!-- Small local CSS for layout and accessibility; keep minimal -->
   <style>
-    /* Small accessibility helpers */
-    :root { --reveal-bg: #ffffff; }
-    body { margin: 0; background: var(--reveal-bg); color: #111; }
-    main { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    /* Ensure focus outlines for keyboard users */
-    :focus { outline: 3px solid #1f4fd8; outline-offset: 2px; }
+    :root { --focus-color: #1f4fd8; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .reveal:focus { outline: 3px solid var(--focus-color); outline-offset: 4px; }
+    /* Ensure the slide container fills the viewport without interfering with Reveal internals */
+    main { min-height: 100vh; }
   </style>
 </head>
 <body>
-  <header role="banner" aria-label="Presentation header" style="padding:12px 20px;">
+  <header aria-hidden="false" style="padding:12px 20px;">
     <h1 style="margin:0;font-size:18px;">Gold and Bitcoin as Inflation Hedges</h1>
     <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Jojo Wibowo — RevoU DEEPP</p>
   </header>
 
   <main role="main">
-    <div class="reveal" aria-live="polite">
-      <div class="slides" role="list">
-        <!-- Load slides.md from same folder; Reveal will split slides by --- -->
-        <section data-markdown="./gold_bitcoin_pitch_marp.md" data-separator="^\n---\n" data-separator-vertical="^\n--\n" data-charset="utf-8"></section>
+    <div class="reveal" aria-label="Slide deck">
+      <div class="slides">
+        <!-- Use a simple, explicit relative path. Keep slides.md in same folder as index.html -->
+        <section data-markdown="gold_bitcoin_pitch_marp.md" data-separator="^---$" data-charset="utf-8"></section>
       </div>
     </div>
   </main>
 
-  <footer role="contentinfo" style="padding:12px 20px;font-size:13px;color:#6b7280;">
-    <span>Jojo Wibowo | RevoU DEEPP</span>
+  <footer aria-hidden="false" style="padding:12px 20px;font-size:13px;color:#6b7280;">
+    Jojo Wibowo | RevoU DEEPP
   </footer>
 
-  <!-- Local Reveal scripts (preferred). If missing, the page will attempt CDN fallback. -->
+  <!-- Reveal core script (CDN). If you prefer local files, place them under vendor/reveal and change the path. -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/markdown/markdown.js"></script>
+
   <script>
-    // Helper to load a script and return a Promise
-    function loadScript(src){ return new Promise((res, rej) => {
-      const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s);
-    }); }
-
-    // Try local files first, then CDN fallback
-    (async function initReveal(){
-      const localBase = './vendor/reveal/dist/';
-      const cdnBase = 'https://cdn.jsdelivr.net/npm/reveal.js@4/dist/';
-      try {
-        await loadScript(localBase + 'reveal.js');
-        // load markdown plugin from local path
-        await loadScript('./vendor/reveal/plugin/markdown/markdown.js');
-      } catch (e) {
-        // Fallback to CDN if local files missing
-        await loadScript(cdnBase + 'reveal.js');
-        await loadScript(cdnBase + 'plugin/markdown/markdown.js');
-      }
-
-      // Initialize Reveal with conservative, accessible defaults
-      Reveal.initialize({
-        controls: true,
-        progress: true,
-        center: true,
-        hash: false,
-        slideNumber: true,
-        history: false,
-        width: 960,
-        height: 700,
-        margin: 0.08,
-        minScale: 0.5,
-        maxScale: 1.2,
-        keyboard: true,
-        plugins: [ RevealMarkdown ],
-        // Print-friendly settings
-        pdfSeparateFragments: false
-      });
-    })();
+    // Initialize Reveal with sensible, responsive defaults
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      center: true,
+      hash: true,
+      slideNumber: true,
+      width: undefined,
+      height: undefined,
+      margin: 0.08,
+      minScale: 0.6,
+      maxScale: 1.2,
+      keyboard: true,
+      plugins: [ RevealMarkdown ]
+    });
   </script>
 </body>
 </html>

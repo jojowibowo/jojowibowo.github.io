@@ -1,86 +1,414 @@
-<!doctype html>
-<meta http-equiv="refresh" content="0; url=/gold_bitcoin_pitch_marp.html">
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Gold and Bitcoin as Inflation Hedges — Jojo Wibowo</title>
-  <meta name="description" content="Regime-dependent analysis of gold and bitcoin for Singaporean retail investors.">
-  <meta name="author" content="Jojo Wibowo">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lion City Strategy 2026: Gold & Bitcoin Analysis</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chosen Palette: Strategic Harmony (Color-Blind Friendly) -->
+    <!-- Background: Neutral Paper (#FDFCFB) -->
+    <!-- Accent Red (Stress): #C8102E (High Contrast / Protanopia safe) -->
+    <!-- Accent Gold (Stability): #B8860B (Darker for visibility) -->
+    <!-- Accent Blue (Liquidity): #003366 (Deep Navy / Tritanopia safe) -->
 
-  <!-- Local Reveal core CSS (preferred) -->
-  <link rel="stylesheet" href="./vendor/reveal/dist/reveal.css">
-  <!-- Minimal fallback theme removed; use only your custom theme if complete -->
-  <link rel="stylesheet" href="./lioncity-finai.css">
+    <!-- Application Structure Plan: 
+         1. Hero / Executive Summary: Focus on the "Hedge Myth" and the transition to Regime-Dependent strategy.
+         2. Asset Explorer: Toggle between Gold (Defensive) and Bitcoin (Sentiment) driven by the finalized research results.
+         3. Strategy Engine: A simulator based on the project's Actionable Framework.
+         4. Scenarios: Forward-looking 2026 outlook.
+         WHY: This structure translates the quantitative findings of the project into a functional tool for Singaporean retail investors.
+    -->
 
-  <style>
-    /* Small accessibility helpers */
-    :root { --reveal-bg: #ffffff; }
-    body { margin: 0; background: var(--reveal-bg); color: #111; }
-    main { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    /* Ensure focus outlines for keyboard users */
-    :focus { outline: 3px solid #1f4fd8; outline-offset: 2px; }
-  </style>
+    <!-- Visualization & Content Choices:
+         - Gold Bar Chart: Highlights the 0.017 CPI vs -0.316 FX correlation findings.
+         - Bitcoin Doughnut: Visualizes the 47% Sentiment driver discovered via Machine Learning.
+         - Simulator: Dynamic DOM updates using the project's threshold logic (Stress > 70).
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <style>
+        :root {
+            --brand-red: #C8102E;
+            --brand-gold: #B8860B;
+            --brand-blue: #003366;
+            --bg-light: #FDFCFB;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-light);
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            margin: 0 auto;
+        }
+
+        .active-gold { background-color: var(--brand-gold); color: white; border-color: var(--brand-gold); }
+        .active-btc { background-color: var(--brand-blue); color: white; border-color: var(--brand-blue); }
+        .inactive { background-color: #f1f1f1; color: #666; border-color: #ddd; }
+
+        .card-accent-gold { border-top: 6px solid var(--brand-gold); }
+        .card-accent-blue { border-top: 6px solid var(--brand-blue); }
+        .card-accent-red { border-top: 6px solid var(--brand-red); }
+
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid var(--brand-blue);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
-<body>
-  <header role="banner" aria-label="Presentation header" style="padding:12px 20px;">
-    <h1 style="margin:0;font-size:18px;">Gold and Bitcoin as Inflation Hedges</h1>
-    <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Jojo Wibowo — RevoU DEEPP</p>
-  </header>
+<body class="selection:bg-blue-100">
 
-  <main role="main">
-    <div class="reveal" aria-live="polite">
-      <div class="slides" role="list">
-        <!-- Load slides.md from same folder; Reveal will split slides by --- -->
-        <section data-markdown="slides.md" data-separator="^\n---\n" data-separator-vertical="^\n--\n" data-charset="utf-8"></section>
-      </div>
-    </div>
-  </main>
+    <!-- Navbar -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-[#003366] rounded-lg flex items-center justify-center text-white font-bold text-xl">L</div>
+                <div>
+                    <h1 class="font-bold text-lg text-[#003366] leading-none">Lion City Strategy</h1>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 font-semibold">2026 Strategic Review</p>
+                </div>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-gray-500">
+                <a href="#summary" class="hover:text-red-700 transition">The Myth</a>
+                <a href="#analysis" class="hover:text-red-700 transition">Findings</a>
+                <a href="#simulator" class="hover:text-red-700 transition">Simulator</a>
+            </nav>
+        </div>
+    </header>
 
-  <footer role="contentinfo" style="padding:12px 20px;font-size:13px;color:#6b7280;">
-    <span>Jojo Wibowo | RevoU DEEPP</span>
-  </footer>
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-24">
 
-  <!-- Local Reveal scripts (preferred). If missing, the page will attempt CDN fallback. -->
-  <script>
-    // Helper to load a script and return a Promise
-    function loadScript(src){ return new Promise((res, rej) => {
-      const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s);
-    }); }
+        <!-- Hero: The Project Result -->
+        <section id="summary" class="space-y-12">
+            <div class="max-w-4xl">
+                <h2 class="text-xs font-black text-red-700 uppercase tracking-[0.2em] mb-4">Research Summary</h2>
+                <h3 class="text-4xl md:text-6xl font-black text-gray-900 leading-tight mb-6">
+                    Hedges are <span class="text-red-700 italic">Regime-Dependent</span>,<br>not Automatic.
+                </h3>
+                <p class="text-xl text-gray-600 leading-relaxed max-w-2xl">
+                    Our 2026 research project debunks the "static hedge" narrative. Neither asset provides mechanical protection against Singapore's CPI. Instead, the results reveal assets that respond to global liquidity and currency stress.
+                </p>
+            </div>
 
-    // Try local files first, then CDN fallback
-    (async function initReveal(){
-      const localBase = './vendor/reveal/dist/';
-      const cdnBase = 'https://cdn.jsdelivr.net/npm/reveal.js@4/dist/';
-      try {
-        await loadScript(localBase + 'reveal.js');
-        // load markdown plugin from local path
-        await loadScript('./vendor/reveal/plugin/markdown/markdown.js');
-      } catch (e) {
-        // Fallback to CDN if local files missing
-        await loadScript(cdnBase + 'reveal.js');
-        await loadScript(cdnBase + 'plugin/markdown/markdown.js');
-      }
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 card-accent-gold">
+                    <div class="text-3xl font-black text-yellow-700 mb-2">54%</div>
+                    <h4 class="font-bold text-gray-900 mb-2">Currency Bridge</h4>
+                    <p class="text-sm text-gray-500 leading-relaxed">Gold performance is explained by <strong>USD/SGD</strong> volatility, acting as a defensive stabilizer during macro stress.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 card-accent-blue">
+                    <div class="text-3xl font-black text-blue-900 mb-2">47%</div>
+                    <h4 class="font-bold text-gray-900 mb-2">Sentiment Risk</h4>
+                    <p class="text-sm text-gray-500 leading-relaxed">Bitcoin acts as a <strong>liquidity sponge</strong>. Movements track sentiment indices rather than inflation fundamentals.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 card-accent-red">
+                    <div class="text-3xl font-black text-red-700 mb-2">0.017</div>
+                    <h4 class="font-bold text-gray-900 mb-2">CPI Independence</h4>
+                    <p class="text-sm text-gray-500 leading-relaxed">A negligible statistical link. Both assets are independent of local Consumer Price Index fluctuations.</p>
+                </div>
+            </div>
+        </section>
 
-      // Initialize Reveal with conservative, accessible defaults
-      Reveal.initialize({
-        controls: true,
-        progress: true,
-        center: true,
-        hash: false,
-        slideNumber: true,
-        history: false,
-        width: 960,
-        height: 700,
-        margin: 0.08,
-        minScale: 0.5,
-        maxScale: 1.2,
-        keyboard: true,
-        plugins: [ RevealMarkdown ],
-        // Print-friendly settings
-        pdfSeparateFragments: false
-      });
-    })();
-  </script>
+        <!-- Analysis Dashboard -->
+        <section id="analysis" class="scroll-mt-24 space-y-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-200 pb-8">
+                <div>
+                    <h2 class="text-3xl font-black text-gray-900 uppercase tracking-tighter">Key Analytical Findings</h2>
+                    <p class="text-gray-500 mt-2 italic">Quantitative insights from the finalized project analysis.</p>
+                </div>
+                <div class="flex bg-gray-100 p-1 rounded-xl">
+                    <button id="tab-gold" onclick="updateView('gold')" class="px-6 py-2.5 rounded-lg text-sm font-bold active-gold flex items-center transition-all">
+                        <i class="fa-solid fa-coins mr-2"></i> GOLD
+                    </button>
+                    <button id="tab-btc" onclick="updateView('btc')" class="px-6 py-2.5 rounded-lg text-sm font-bold inactive flex items-center transition-all">
+                        <i class="fa-brands fa-bitcoin mr-2"></i> BITCOIN
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] border border-gray-200 shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+                <!-- Viz -->
+                <div class="lg:col-span-7 p-8 md:p-12 bg-gray-50 flex flex-col justify-center">
+                    <div class="chart-container">
+                        <canvas id="assetChart"></canvas>
+                    </div>
+                </div>
+                <!-- Textual Deep Dive -->
+                <div class="lg:col-span-5 p-8 md:p-12 space-y-10 flex flex-col justify-center">
+                    <div>
+                        <h3 id="view-title" class="text-2xl font-black text-gray-900 mb-4 tracking-tight uppercase">Defensive Stabilizer</h3>
+                        <p id="view-desc" class="text-gray-600 leading-relaxed">
+                            Gold functions as a hedge against macro-uncertainty and currency devaluation. In the Singaporean context, it protects capital when the SGD weakens against the USD.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-5 bg-gray-50 rounded-xl flex items-center justify-between border-l-4 border-yellow-600">
+                            <span class="text-xs font-black text-gray-400 uppercase tracking-widest">Primary Driver</span>
+                            <span id="stat-1" class="text-lg font-black text-gray-900">USD/SGD (-0.316)</span>
+                        </div>
+                        <div class="p-5 bg-gray-50 rounded-xl flex items-center justify-between border-l-4 border-gray-300">
+                            <span class="text-xs font-black text-gray-400 uppercase tracking-widest">CPI Correlation</span>
+                            <span id="stat-2" class="text-lg font-black text-gray-900">0.017</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Regime Simulator -->
+        <section id="simulator" class="scroll-mt-24">
+            <div class="bg-[#003366] rounded-[3rem] p-8 md:p-16 text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute -bottom-10 -right-10 opacity-10 pointer-events-none">
+                    <i class="fa-solid fa-compass text-[20rem]"></i>
+                </div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-20">
+                    <div class="space-y-10">
+                        <div>
+                            <h2 class="text-4xl font-black mb-4">Actionable Framework</h2>
+                            <p class="text-blue-200 leading-relaxed">
+                                Our project concludes that strategy depends on two factors: <strong>Macro Stress</strong> and <strong>Sentiment</strong>. Use this tool to simulate the recommended allocation bias.
+                            </p>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-end">
+                                    <label class="text-xs font-black tracking-widest text-blue-300 uppercase">Macro Stress Level</label>
+                                    <span id="lbl-stress" class="text-3xl font-black">50</span>
+                                </div>
+                                <input type="range" id="sim-stress" min="0" max="100" value="50">
+                                <div class="flex justify-between text-[10px] font-bold text-blue-400/60 uppercase">
+                                    <span>Market Calm</span>
+                                    <span>Crisis Regime (>70)</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-end">
+                                    <label class="text-xs font-black tracking-widest text-blue-300 uppercase">Fear & Greed Index</label>
+                                    <span id="lbl-sentiment" class="text-3xl font-black">50</span>
+                                </div>
+                                <input type="range" id="sim-sentiment" min="0" max="100" value="50">
+                                <div class="flex justify-between text-[10px] font-bold text-blue-400/60 uppercase">
+                                    <span>Extreme Fear</span>
+                                    <span>Extreme Greed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Output Card -->
+                    <div class="bg-white rounded-3xl p-10 text-gray-900 shadow-inner flex flex-col justify-center">
+                        <div id="res-icon" class="text-6xl text-gray-300 mb-6">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <h4 id="res-title" class="text-2xl font-black mb-4 uppercase tracking-tight">Neutral Regime</h4>
+                        <p id="res-desc" class="text-gray-500 text-sm leading-relaxed mb-8">
+                            Indicators are balanced. Maintain baseline diversification. Focus on currency movements and global liquidity signals.
+                        </p>
+                        
+                        <div class="pt-6 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Strategy Bias</span>
+                            <span id="res-badge" class="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-[10px] font-black uppercase">Neutral</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2026 Scenarios -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm card-accent-red">
+                <div class="w-12 h-12 bg-red-50 text-red-700 rounded-xl flex items-center justify-center mb-6 text-xl">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h5 class="font-black text-gray-900 mb-3 text-lg uppercase">1. Stagflation</h5>
+                <p class="text-sm text-gray-500 leading-relaxed">High stress + weak currency. Gold becomes the primary pillar for capital preservation.</p>
+            </div>
+            <div class="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm card-accent-blue">
+                <div class="w-12 h-12 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center mb-6 text-xl">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h5 class="font-black text-gray-900 mb-3 text-lg uppercase">2. Policy Easing</h5>
+                <p class="text-sm text-gray-500 leading-relaxed">Rising sentiment + low stress. Bitcoin acts as a liquidity sponge for tactical growth.</p>
+            </div>
+            <div class="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm card-accent-gold">
+                <div class="w-12 h-12 bg-yellow-50 text-yellow-700 rounded-xl flex items-center justify-center mb-6 text-xl">
+                    <i class="fa-solid fa-shuffle"></i>
+                </div>
+                <h5 class="font-black text-gray-900 mb-3 text-lg uppercase">3. Volatility</h5>
+                <p class="text-sm text-gray-500 leading-relaxed">Mixed signals. The project prioritizes dynamic regime identification over static holding.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-white py-20 px-6 text-center">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <h2 class="text-2xl font-black tracking-tighter uppercase">Lion City Strategy</h2>
+            <p class="text-gray-500 text-sm">© 2026 Strategic Review. Jojo Wibowo & Team. Quantitative results from finalized project data.</p>
+            <div class="flex justify-center space-x-4">
+                <span class="px-3 py-1 bg-gray-800 text-[10px] font-bold text-gray-400 rounded">N=410 WEEKS</span>
+                <span class="px-3 py-1 bg-gray-800 text-[10px] font-bold text-gray-400 rounded">ML RANDOM FOREST</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const config = {
+            gold: {
+                title: "Defensive Stabilizer",
+                desc: "Gold functions as a hedge against macro-uncertainty. In the Singaporean context, it protects capital when the SGD weakens against the Greenback during global stress events.",
+                stat1: "USD/SGD (-0.316)",
+                stat2: "CPI Link (0.017)",
+                type: 'bar',
+                data: {
+                    labels: ['Headline CPI', 'Core CPI', 'USD/SGD (Inv)'],
+                    datasets: [{
+                        label: 'Correlation Coefficient',
+                        data: [0.017, 0.034, -0.316],
+                        backgroundColor: ['#003366', '#003366', '#C8102E'],
+                        borderRadius: 10,
+                        borderWidth: 0
+                    }]
+                }
+            },
+            btc: {
+                title: "Sentiment Sponge",
+                desc: "Bitcoin movements are 47% explained by the <strong>Fear & Greed index</strong>. It acts as a sentiment-driven risk asset, showing zero protective link to local inflation fundamentals.",
+                stat1: "Sentiment (0.466)",
+                stat2: "CPI Link (0.042)",
+                type: 'doughnut',
+                data: {
+                    labels: ['Sentiment (F&G)', 'Liquidity Lags', 'Macro Uncertainty', 'Inflation (CPI)'],
+                    datasets: [{
+                        data: [47, 33, 15, 5],
+                        backgroundColor: ['#003366', '#B8860B', '#C8102E', '#cbd5e1'],
+                        borderWidth: 0,
+                        hoverOffset: 20
+                    }]
+                }
+            }
+        };
+
+        let chartInstance = null;
+
+        function updateView(asset) {
+            const data = config[asset];
+            
+            document.getElementById('tab-gold').className = asset === 'gold' ? "px-6 py-2.5 rounded-lg text-sm font-bold active-gold flex items-center" : "px-6 py-2.5 rounded-lg text-sm font-bold inactive flex items-center";
+            document.getElementById('tab-btc').className = asset === 'btc' ? "px-6 py-2.5 rounded-lg text-sm font-bold active-btc flex items-center" : "px-6 py-2.5 rounded-lg text-sm font-bold inactive flex items-center";
+
+            document.getElementById('view-title').innerText = data.title;
+            document.getElementById('view-desc').innerHTML = data.desc;
+            document.getElementById('stat-1').innerText = data.stat1;
+            document.getElementById('stat-2').innerText = data.stat2;
+
+            const ctx = document.getElementById('assetChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: data.type,
+                data: data.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: data.type === 'doughnut', position: 'bottom', labels: { font: { weight: 'bold' } } },
+                        tooltip: { backgroundColor: '#111827', padding: 15 }
+                    },
+                    scales: data.type === 'bar' ? {
+                        y: { max: 1, min: -1, ticks: { font: { weight: 'bold' } } },
+                        x: { grid: { display: false } }
+                    } : {}
+                }
+            });
+        }
+
+        function runSimulation() {
+            const stress = parseInt(document.getElementById('sim-stress').value);
+            const sentiment = parseInt(document.getElementById('sim-sentiment').value);
+            
+            document.getElementById('lbl-stress').innerText = stress;
+            document.getElementById('lbl-sentiment').innerText = sentiment;
+
+            const title = document.getElementById('res-title');
+            const desc = document.getElementById('res-desc');
+            const badge = document.getElementById('res-badge');
+            const icon = document.getElementById('res-icon');
+
+            if (stress > 70) {
+                title.innerText = "Crisis Regime";
+                desc.innerText = "High macro stress triggers Gold's defensive stabilizer role. Prioritize capital preservation and currency-hedged assets.";
+                badge.innerText = "BIAS: GOLD (DEFENSIVE)";
+                badge.className = "px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-[10px] font-black";
+                icon.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+                icon.className = "text-6xl text-red-700 mb-6";
+            } else if (sentiment > 65) {
+                title.innerText = "Growth Regime";
+                desc.innerText = "High sentiment and low stress favor risk assets. Bitcoin acts as a liquidity sponge for tactical accumulation in this regime.";
+                badge.innerText = "BIAS: BTC (TACTICAL)";
+                badge.className = "px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-black";
+                icon.innerHTML = '<i class="fa-solid fa-rocket"></i>';
+                icon.className = "text-6xl text-blue-700 mb-6";
+            } else if (sentiment < 30) {
+                title.innerText = "Panic Regime";
+                desc.innerText = "Extreme fear detected. Avoid high-volatility risk assets. Prioritize cash equivalents until sentiment stabilizes.";
+                badge.innerText = "BIAS: LIQUIDITY / CASH";
+                badge.className = "px-4 py-1.5 bg-gray-800 text-white rounded-full text-[10px] font-black";
+                icon.innerHTML = '<i class="fa-solid fa-vault"></i>';
+                icon.className = "text-6xl text-gray-800 mb-6";
+            } else {
+                title.innerText = "Neutral Regime";
+                desc.innerText = "Indicators are balanced. Baseline diversification is advised. Monitor currency breakout signals.";
+                badge.innerText = "BIAS: NEUTRAL";
+                badge.className = "px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-[10px] font-black";
+                icon.innerHTML = '<i class="fa-solid fa-scale-balanced"></i>';
+                icon.className = "text-6xl text-gray-300 mb-6";
+            }
+        }
+
+        window.onload = () => {
+            updateView('gold');
+            runSimulation();
+            document.getElementById('sim-stress').addEventListener('input', runSimulation);
+            document.getElementById('sim-sentiment').addEventListener('input', runSimulation);
+        };
+    </script>
 </body>
 </html>

@@ -1,11 +1,317 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Username GitHub Pages</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Combination Visualizer (7,776 Sets)</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-accent': '#002FA7',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f8f9;
+        }
+        .color-block {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .color-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+        }
+        /* Custom scrollbar for better look */
+        #palette-display::-webkit-scrollbar {
+            height: 8px;
+        }
+        #palette-display::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        #palette-display::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Custom table styling for better separation and readability */
+        .design-table th, .design-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .design-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+    </style>
 </head>
-<body>
-  <h1>Hello from username.github.io</h1>
-  <p>This site is served from the repository username.github.io</p>
+<body class="p-4 sm:p-8 flex flex-col items-center justify-center min-h-screen">
+
+    <div class="max-w-4xl w-full">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2 text-center">Color Combination Visualizer</h1>
+        <p class="text-lg text-gray-600 mb-8 text-center">
+            Click the button to generate one of the <strong>7,776</strong> possible color-blind friendly 5-color sets 
+            (one color from each category: Blue, Red, Yellow, Green, Grey).
+        </p>
+
+        <!-- Display Area for the 5-Color Palette -->
+        <!-- UPDATED: Added 'justify-center' to center the flex items -->
+        <div id="palette-display" class="flex flex-row justify-center space-x-4 overflow-x-auto pb-4">
+            <!-- Color swatches will be inserted here -->
+        </div>
+
+        <!-- Generation Button -->
+        <div class="mt-8 flex justify-center">
+            <button onclick="generateRandomPalette()" class="bg-primary-accent text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition-colors transform hover:scale-105 active:scale-95 flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <span>Generate New Palette</span>
+            </button>
+        </div>
+
+        <!-- Instructions / Color Category Mapping -->
+        <div class="mt-12 p-6 bg-white border border-gray-200 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Palette Structure</h3>
+            <p class="text-gray-600 mb-4">Each generated set follows this order, ensuring high distinction for accessibility:</p>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 text-center text-sm font-semibold">
+                <!-- Using <strong> for semantic boldness and clearer category names -->
+                <span class="p-2 bg-blue-50 rounded-lg text-blue-800"><strong>1. Blue</strong> Tone</span>
+                <span class="p-2 bg-red-50 rounded-lg text-red-800"><strong>2. Red</strong>/Warm Tone</span>
+                <span class="p-2 bg-yellow-50 rounded-lg text-yellow-800"><strong>3. Yellow</strong>/Gold Tone</span>
+                <span class="p-2 bg-green-50 rounded-lg text-green-800"><strong>4. Green</strong> Tone</span>
+                <span class="p-2 bg-gray-50 rounded-lg text-gray-800"><strong>5. Grey</strong>/Neutral Tone</span>
+            </div>
+        </div>
+
+        <!-- Design Application Suggestions Section (NEW CONTENT) -->
+        <div class="mt-12 p-6 bg-white border border-gray-200 rounded-xl shadow-md">
+            <p class="text-lg text-gray-700 mb-4">A comprehensive, color-blind friendly palette like this (especially the 30 highly distinguishable colors) is ideal for complex systems.</p>
+
+            <p class="text-lg text-gray-700 mb-6">Here are suggestions for how to effectively apply this palette in three key areas: Charts/Data Visualization, User Interface (UI) Design, and Branding.</p>
+
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Design Application Suggestions</h2>
+
+            <p class="text-gray-600 mb-6">The primary strength of this palette is its high level of visual distinction across color groups, making it excellent for accessibility (specifically red-green color blindness).</p>
+
+            <!-- Charts & Data Visualization -->
+            <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">1. Charts & Data Visualization</h3>
+            <p class="text-gray-600 mb-4">This palette is extremely valuable for visualization because the six colors within the Blue, Red, Yellow, and Green categories are selected to be maximally distinguishable from each other and from the adjacent color groups.</p>
+            
+            <div class="overflow-x-auto mb-8 rounded-lg border">
+                <table class="design-table w-full text-sm text-left text-gray-600">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="py-3 px-6">Application</th>
+                            <th scope="col" class="py-3 px-6">Recommended Color Group(s)</th>
+                            <th scope="col" class="py-3 px-6">Strategy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white border-b">
+                            <td class="py-4 px-6 font-bold">Categorical Data</td>
+                            <td class="py-4 px-6">All 30 (Blue, Red, Yellow, Green, Grey)</td>
+                            <td class="py-4 px-6">Use one color from <em>each</em> of the four main categories (Blue, Red, Yellow, Green) for up to 4 distinct, non-related data series. If you need more (up to 24), cycle through all 6 shades in each group, as they are proven to contrast sharply.</td>
+                        </tr>
+                        <tr class="bg-gray-50 border-b">
+                            <td class="py-4 px-6 font-bold">Sequential Data</td>
+                            <td class="py-4 px-6">Single Group (e.g., Blue)</td>
+                            <td class="py-4 px-6">Use 3–5 shades from a single group (e.g., Navy Blue, Midnight Blue, Dark Imperial Blue, International Klein Blue) to create a sequential gradient. This shows increasing or decreasing intensity without introducing distracting hues.</td>
+                        </tr>
+                        <tr class="bg-white border-b">
+                            <td class="py-4 px-6 font-bold">Status/Alerts</td>
+                            <td class="py-4 px-6">Red, Green, Yellow</td>
+                            <td class="py-4 px-6"><strong>Red:</strong> Crimson Red (<code>#A50026</code>) or Firebrick (<code>#B22222</code>) for failure/critical alerts. <strong>Green:</strong> Teal Green (<code>#009E73</code>) or Forest Green (<code>#228B22</code>) for success/positive status. <strong>Yellow:</strong> Soft Yellow (<code>#F0E442</code>) or Amber (<code>#FFBF00</code>) for warnings/caution.</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="py-4 px-6 font-bold">Backgrounds/Baselines</td>
+                            <td class="py-4 px-6">Grey and Dark Blue</td>
+                            <td class="py-4 px-6">Use Light Gray (<code>#D3D3D3</code>) or Gainsboro (<code>#DCDCDC</code>) for chart backgrounds, axis lines, and grid lines. Use Dark Slate Gray (<code>#2F4F4F</code>) for main text and labels to ensure maximum contrast.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- User Interface (UI) Design -->
+            <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 mt-8">2. User Interface (UI) Design</h3>
+            <p class="text-gray-600 mb-4">For UI, avoid using all 35 colors. Instead, select one or two primary hues and use the others sparingly for states and accents.</p>
+
+            <div class="overflow-x-auto mb-4 rounded-lg border">
+                <table class="design-table w-full text-sm text-left text-gray-600">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="py-3 px-6">UI Component Role</th>
+                            <th scope="col" class="py-3 px-6">Recommended Colors</th>
+                            <th scope="col" class="py-3 px-6">Specific Hexes for Focus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white border-b">
+                            <td class="py-4 px-6 font-bold">Primary Brand / Background</td>
+                            <td class="py-4 px-6">Dark Blue and Grey</td>
+                            <td class="py-4 px-6"><strong>Primary:</strong> Oxford Blue (<code>#002147</code>) or Prussian Blue (<code>#003153</code>) for headers/navigation. <strong>Background:</strong> Light Gray (<code>#D3D3D3</code>) or Gainsboro (<code>#DCDCDC</code>) for panels/cards.</td>
+                        </tr>
+                        <tr class="bg-gray-50 border-b">
+                            <td class="py-4 px-6 font-bold">Interactive Elements (Buttons/Links)</td>
+                            <td class="py-4 px-6">International Klein Blue (IKB) or Teal Green</td>
+                            <td class="py-4 px-6"><strong>Primary CTA:</strong> IKB (<code>#002FA7</code>) for a vibrant, trustworthy call-to-action. <strong>Secondary:</strong> Slate Gray (<code>#708090</code>).</td>
+                        </tr>
+                        <tr class="bg-white border-b">
+                            <td class="py-4 px-6 font-bold">Error/Destructive Actions</td>
+                            <td class="py-4 px-6">Dark Raspberry or Brick Red</td>
+                            <td class="py-4 px-6">Use Dark Raspberry (<code>#872657</code>) for softer visual errors, or Brick Red (<code>#8B0000</code>) for high-impact destructive confirmations (e.g., delete buttons).</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="py-4 px-6 font-bold">Input Feedback</td>
+                            <td class="py-4 px-6">Soft Yellow and Teal Green</td>
+                            <td class="py-4 px-6"><strong>Success:</strong> Teal Green (<code>#009E73</code>). <strong>Warning:</strong> Mustard Yellow (<code>#E1AD01</code>). The high luminance of Soft Yellow also works well for notifications on dark backgrounds.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="text-gray-600 mb-6 mt-4 italic"><strong>Tip for UI States:</strong> Since you have 6 shades per hue, use them for hover/active/disabled states. For example, use Dark Imperial Blue (<code>#00416A</code>) for a button, and the slightly darker Prussian Blue (<code>#003153</code>) for its hover state.</p>
+
+            <!-- Branding & Identity -->
+            <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 mt-8">3. Branding & Identity</h3>
+            <p class="text-gray-600 mb-4">Branding should focus on defining a core identity using 2–3 colors and then using the remaining palette to support visual storytelling and campaigns.</p>
+
+            <div class="overflow-x-auto mb-8 rounded-lg border">
+                <table class="design-table w-full text-sm text-left text-gray-600">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="py-3 px-6">Branding Element</th>
+                            <th scope="col" class="py-3 px-6">Recommended Color Group(s)</th>
+                            <th scope="col" class="py-3 px-6">Rationale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white border-b">
+                            <td class="py-4 px-6 font-bold">Core Primary Color</td>
+                            <td class="py-4 px-6">Oxford Blue or Prussian Blue</td>
+                            <td class="py-4 px-6">These are professional, historical, and muted tones, conveying authority, trust, and quality. Excellent for logos and main communications.</td>
+                        </tr>
+                        <tr class="bg-gray-50 border-b">
+                            <td class="py-4 px-6 font-bold">Signature Accent</td>
+                            <td class="py-4 px-6">International Klein Blue or Vermilion</td>
+                            <td class="py-4 px-6">Use a single, high-impact accent. IKB (<code>#002FA7</code>) is artistic and vibrant; Vermilion (<code>#D55E00</code>) is energetic and modern (orange-red). This color should be used sparingly for maximum impact.</td>
+                        </tr>
+                        <tr class="bg-white border-b">
+                            <td class="py-4 px-6 font-bold">Monochromatic Palette</td>
+                            <td class="py-4 px-6">Grey Group</td>
+                            <td class="py-4 px-6">Use the full range of the Grey group (from Dark Slate Gray to Gainsboro) to establish depth, texture, and professional photographic treatments, ensuring the main brand color remains the focal point.</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="py-4 px-6 font-bold">Thematic Support</td>
+                            <td class="py-4 px-6">Yellow/Green/Red</td>
+                            <td class="py-4 px-6">Deploy the other hues for thematic content: <strong>Yellows</strong> (Goldenrod, Amber) for energy, innovation, or financial elements. <strong>Greens</strong> (Forest Green, Olive Drab) for sustainability or health. <strong>Dark Raspberry</strong> for a unique, memorable color that avoids common corporate clichés.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Final Branding Recommendation -->
+            <div class="p-4 bg-blue-50 border-l-4 border-primary-accent rounded-r-lg mb-4">
+                <h4 class="text-xl font-bold text-gray-800 mb-2">Branding Recommendation:</h4>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                    <li><strong>Primary:</strong> Oxford Blue (<code>#002147</code>)</li>
+                    <li><strong>Secondary/Text:</strong> Dark Slate Gray (<code>#2F4F4F</code>)</li>
+                    <li><strong>Accent:</strong> Vermilion (<code>#D55E00</code>)</li>
+                    <li><strong>Base:</strong> Light Gray (<code>#D3D3D3</code>)</li>
+                </ul>
+                <p class="text-sm text-gray-600 mt-3">This combination is professional, highly legible, and features a distinctive, accessible accent for important brand elements.</p>
+            </div>
+        </div>
+        <!-- END Design Application Suggestions Section -->
+
+    </div>
+
+    <script>
+        // --- Color-Blind Friendly Hex Codes (30 Total, 6 per Category) ---
+        // These are the 6 colors per category from the original 35 that exclude the "ordinary" placeholders.
+        const COLOR_SETS = {
+            'Blue': ['#000080', '#191970', '#002147', '#003153', '#00416A', '#002FA7'],
+            'Red': ['#D55E00', '#A50026', '#8B0000', '#B22222', '#B7410E', '#872657'],
+            'Yellow': ['#F0E442', '#DAA520', '#E1AD01', '#C4B454', '#FFBF00', '#EEDC82'],
+            'Green': ['#009E73', '#228B22', '#2E8B57', '#6B8E23', '#01796F', '#4A5D23'],
+            'Grey': ['#999999', '#D3D3D3', '#2F4F4F', '#696969', '#DCDCDC', '#708090']
+        };
+
+        const CATEGORIES = ['Blue', 'Red', 'Yellow', 'Green', 'Grey'];
+
+        // Helper function to pick a random item from an array
+        function getRandomColor(category) {
+            const array = COLOR_SETS[category];
+            const randomIndex = Math.floor(Math.random() * array.length);
+            return array[randomIndex];
+        }
+
+        // Calculate perceived luminosity to determine text color for contrast
+        function getTextColor(hex) {
+            // Function definition (copied from prior versions)
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            const rgb = result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+            if (!rgb) return 'text-gray-900'; 
+            
+            const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
+            return luminance > 0.45 ? 'text-gray-900' : 'text-white';
+        }
+
+        // Main function to generate and display a random palette set
+        function generateRandomPalette() {
+            const paletteDisplay = document.getElementById('palette-display');
+            paletteDisplay.innerHTML = '';
+            
+            const randomPalette = {};
+
+            // 1. Generate one color from each of the 5 categories
+            CATEGORIES.forEach(category => {
+                randomPalette[category] = getRandomColor(category);
+            });
+
+            // 2. Render the 5 color blocks
+            CATEGORIES.forEach(category => {
+                const hex = randomPalette[category];
+                const textColorClass = getTextColor(hex);
+                
+                // Use a more descriptive name for the category/tone
+                let toneName = `${category} Tone`;
+                if (category === 'Red') toneName = 'Red/Warm Tone';
+                if (category === 'Yellow') toneName = 'Yellow/Gold Tone';
+                if (category === 'Grey') toneName = 'Grey/Neutral Tone';
+
+
+                const colorBlock = document.createElement('div');
+                colorBlock.className = 'color-block flex-shrink-0 w-32 h-40 rounded-xl shadow-lg p-3 flex flex-col justify-between border border-gray-200';
+                colorBlock.style.backgroundColor = hex;
+                
+                // Using <strong> for the primary category name
+                colorBlock.innerHTML = `
+                    <p class="text-sm font-semibold ${textColorClass} opacity-75"><strong>${category}</strong> Tone</p>
+                    <div class="text-center">
+                        <p class="font-mono text-xl font-bold ${textColorClass}">${hex.toUpperCase()}</p>
+                    </div>
+                `;
+                
+                paletteDisplay.appendChild(colorBlock);
+            });
+        }
+
+        // Initialize the visualization with a random palette on load
+        window.onload = generateRandomPalette;
+    </script>
 </body>
 </html>

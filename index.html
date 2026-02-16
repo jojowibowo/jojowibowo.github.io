@@ -12,23 +12,29 @@
   <meta property="og:description" content="Regime-dependent analysis of gold and bitcoin for retail investors.">
   <meta property="og:type" content="website">
 
-  <!-- Reveal core CSS from CDN (fallback to local if you add vendor/reveal) -->
+  <!-- Reveal core CSS from CDN; local fallback available if vendor/reveal exists -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css">
-  <!-- Your theme only; ensure it contains Reveal-specific rules -->
+  <!-- Centralized theme; ensure lioncity-finai.css contains Reveal-specific rules -->
   <link rel="stylesheet" href="./lioncity-finai.css">
 
-  <!-- Minimal layout CSS; move presentation styles into lioncity-finai.css -->
+  <!-- Minimal site stylesheet; move presentation styles into lioncity-finai.css -->
   <style>
     :root { --focus-color: #1f4fd8; }
-    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    html,body { height:100%; margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
     .reveal:focus { outline: 3px solid var(--focus-color); outline-offset: 4px; }
-    main { min-height: 100vh; }
+    main { min-height:100vh; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   </style>
 </head>
 <body>
   <header class="site-header" aria-hidden="false">
-    <h1 class="site-title">Gold and Bitcoin as Inflation Hedges</h1>
-    <p class="site-subtitle">Jojo Wibowo — RevoU DEEPP</p>
+    <div class="site-meta">
+      <h1 class="site-title">Gold and Bitcoin as Inflation Hedges</h1>
+      <p class="site-subtitle">Jojo Wibowo — RevoU DEEPP</p>
+    </div>
+    <div class="sr-only" aria-hidden="false" id="slide-help">
+      Use arrow keys to navigate slides. Press H for help overlay.
+    </div>
   </header>
 
   <main role="main">
@@ -49,19 +55,31 @@
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/markdown/markdown.js"></script>
 
   <script>
-    // Initialize Reveal with responsive, accessible defaults
-    Reveal.initialize({
-      controls: true,
-      progress: true,
-      center: true,
-      hash: true,
-      slideNumber: true,
-      margin: 0.08,
-      minScale: 0.6,
-      maxScale: 1.2,
-      keyboard: true,
-      plugins: [ RevealMarkdown ]
-    });
+    // If you prefer local files, place Reveal under vendor/reveal and uncomment the check below.
+    // The CDN is used by default for simplicity and reliability.
+    (function initializeReveal(){
+      // Initialize Reveal with responsive, accessible defaults
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        hash: true,
+        slideNumber: true,
+        margin: 0.08,
+        minScale: 0.6,
+        maxScale: 1.2,
+        keyboard: true,
+        plugins: [ RevealMarkdown ]
+      });
+
+      // Basic user feedback if Reveal fails to initialize
+      if (typeof Reveal === 'undefined' || !Reveal.isReady) {
+        document.body.insertAdjacentHTML('beforeend',
+          '<div style="position:fixed;left:0;right:0;top:0;background:#fee;border-bottom:1px solid #fbb;padding:8px;text-align:center;z-index:9999;">' +
+          'Presentation failed to load. Check network or ensure reveal.js is available.' +
+          '</div>');
+      }
+    })();
   </script>
 </body>
 </html>
